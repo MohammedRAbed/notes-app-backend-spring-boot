@@ -10,11 +10,11 @@ import java.util.Date
 
 @Service
 class JwtService(
-    @field:Value("JWT_BASE64") private val jwtBase64: String
+    @Value("\${jwt.secret}") private val jwtBase64: String
 ) {
-    private val jwtKey = Keys.hmacShaKeyFor(Base64.getDecoder().decode(jwtBase64))
+    private val secretKey = Keys.hmacShaKeyFor(Base64.getDecoder().decode(jwtBase64))
     private val accessTokenValidity = 15L * 60L * 1000L
-    private val refreshTokenValidity =  30L * 24L * 60L * 60L * 1000L
+    val refreshTokenValidity =  30L * 24L * 60L * 60L * 1000L
 
     private fun generateToken(
         userId: String,
@@ -28,7 +28,7 @@ class JwtService(
             .claim("token_type", type)
             .issuedAt(now)
             .expiration(expiryDate)
-            .signWith(jwtKey)
+            .signWith(secretKey, Jwts.SIG.HS256)
             .compact()
     }
 
@@ -41,12 +41,12 @@ class JwtService(
     }
 
     private fun parseAllClaims(token: String): Claims? {
-        val rawToken = if (token.startsWith("Bearer")) {
+        val rawToken = if (token.startsWith("Bearer ")) {
             token.removePrefix("Bearer ") // Authorization: Bearer <token>
         } else token
         return try {
             Jwts.parser()
-                .verifyWith(jwtKey)
+                .verifyWith(secretKey)
                 .build()
                 .parseSignedClaims(rawToken)
                 .payload

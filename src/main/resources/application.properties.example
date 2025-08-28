@@ -3,3 +3,4 @@ server.port = 9090
 spring.output.ansi.enabled=always
 spring.data.mongodb.uri = ${MONGODB_CONNECTION_STRING}
 spring.security.user.password = ${USER_PASSWORD}
+jwt.secret = ${JWT_BASE64}
