@@ -2,6 +2,8 @@ package com.example.notes_spring_app.controller
 
 import com.example.notes_spring_app.database.model.Note
 import com.example.notes_spring_app.database.repository.NoteRepository
+import jakarta.validation.Valid
+import jakarta.validation.constraints.NotBlank
 import org.bson.types.ObjectId
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -21,6 +23,7 @@ class NoteController(
 
     data class NoteRequest(
         val id: String?,
+        @field:NotBlank(message = "Title cannot be blank")
         val title: String,
         val content: String,
         val color: Long,
@@ -47,7 +50,7 @@ class NoteController(
 
     @PostMapping
     fun save(
-        @RequestBody noteBody: NoteRequest
+        @Valid @RequestBody noteBody: NoteRequest
     ): NoteResponse {
         val ownerId = SecurityContextHolder.getContext().authentication.principal.toString()
 
