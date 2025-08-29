@@ -48,16 +48,17 @@ This project uses environment variables to keep sensitive information out of ver
 
       ```properties
       spring.application.name=notes_spring_app
-      server.port=9090
+      server.port = 9090
       spring.output.ansi.enabled=always
-      spring.data.mongodb.uri=${MONGODB_CONNECTION_STRING}
-      spring.security.user.password=${APP_PASSWORD}
+      spring.data.mongodb.uri = ${MONGODB_CONNECTION_STRING}
+      spring.data.mongodb.auto-index-creation=true
+      jwt.secret = ${JWT_BASE64}
       ```
-    * Replace `${MONGODB_CONNECTION_STRING}` and `${APP_PASSWORD}` with your own values using environment variables.
+    * Replace `${MONGODB_CONNECTION_STRING}` and `${JWT_BASE64}` with your own values using environment variables.
     * In IntelliJ/Android Studio:
 
         * Go to **Run → Edit Configurations → Environment Variables → Add...**
-        * Add keys like `MONGODB_CONNECTION_STRING` and `APP_PASSWORD` with your values.
+        * Add keys like `MONGODB_CONNECTION_STRING` and `JWT_BASE64` with your values.
 
 2. **Sample Configuration File**
 
@@ -92,6 +93,9 @@ Or using Gradle:
 
 ### API Endpoints
 
-* `GET /notes/{ownerId}` - Get a note by owner ID.
+* `GET /notes` - Get a note for authintecated user.
 * `POST /notes` - Create a new note.
 * `DELETE /notes/{id}` - Delete a note.
+* `POST /auth/register` - register new user.
+* `POST /auth/login` - user login.
+
